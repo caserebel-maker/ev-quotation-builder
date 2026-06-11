@@ -94,7 +94,7 @@ export async function POST(request: Request) {
       wireLength,
       breakerSize,
       chargerType,
-      equipmentDetails,
+      equipments, // Received as array of strings
       warrantyYears,
       workScope,
       materialCost,
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
       totalAmount,
     } = data;
 
-    if (!techName || !clientName || !clientAddress || !equipmentDetails || !workScope || !warrantyYears) {
+    if (!techName || !clientName || !clientAddress || !equipments || !Array.isArray(equipments) || equipments.length === 0 || !workScope || !warrantyYears) {
       return NextResponse.json(
         { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน รวมถึงรายละเอียดอุปกรณ์การรับประกันและขั้นตอนงาน" },
         { status: 400 }
@@ -137,6 +137,11 @@ export async function POST(request: Request) {
 
     // Format HTML Line Breaks for Work Scope
     const formattedWorkScope = workScope.replace(/\n/g, "<br>");
+
+    // Format HTML List for Equipments
+    const equipmentsHtml = equipments
+      .map((eq: string, idx: number) => `<li style="margin-bottom: 4px;">${eq}</li>`)
+      .join("");
 
     // Generate beautifully styled HTML Quotation Email matching VoltLink Pro theme
     const emailHtml = `
@@ -311,7 +316,10 @@ export async function POST(request: Request) {
                       - ขนาดสายไฟหลัก: สายทองแดง THW 1x10 sq.mm. เดินร้อยท่อแบบหนา<br>
                       - ระยะเดินสายรวม: ${wireLength} เมตร<br>
                       - เซอร์กิตเบรกเกอร์เมน (MCB): ขนาด ${breakerSize} พร้อมตู้ครอบควบคุมเรียบร้อย<br>
-                      - <strong>สเปกอุปกรณ์และวัสดุที่ใช้:</strong> ${equipmentDetails}
+                      <strong>รายละเอียดอุปกรณ์และสเปกวัสดุเพิ่มเติม:</strong>
+                      <ol style="margin-top: 4px; padding-left: 20px;">
+                        ${equipmentsHtml}
+                      </ol>
                     </span>
                   </td>
                   <td style="text-align: center;">1 งาน</td>
