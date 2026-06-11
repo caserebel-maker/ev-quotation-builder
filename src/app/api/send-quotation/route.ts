@@ -95,14 +95,16 @@ export async function POST(request: Request) {
       breakerSize,
       chargerType,
       equipmentDetails,
+      warrantyYears,
+      workScope,
       materialCost,
       laborCost,
       totalAmount,
     } = data;
 
-    if (!techName || !clientName || !clientAddress || !equipmentDetails) {
+    if (!techName || !clientName || !clientAddress || !equipmentDetails || !workScope || !warrantyYears) {
       return NextResponse.json(
-        { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน รวมถึงรายละเอียดอุปกรณ์" },
+        { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน รวมถึงรายละเอียดอุปกรณ์การรับประกันและขั้นตอนงาน" },
         { status: 400 }
       );
     }
@@ -132,6 +134,9 @@ export async function POST(request: Request) {
 
     const thaiBahtText = arabToThaiBaht(totalAmount);
     const subject = `ใบเสนอราคาติดตั้งวงจรที่ 2 EV - คุณ ${clientName} (เลขที่: ${quotationNumber})`;
+
+    // Format HTML Line Breaks for Work Scope
+    const formattedWorkScope = workScope.replace(/\n/g, "<br>");
 
     // Generate beautifully styled HTML Quotation Email matching VoltLink Pro theme
     const emailHtml = `
@@ -315,11 +320,10 @@ export async function POST(request: Request) {
                 <tr>
                   <td style="text-align: center;">2</td>
                   <td>
-                    <strong>ค่าแรงดำเนินการติดตั้งและทดสอบระบบไฟฟ้า</strong><br>
+                    <strong>ค่าแรงดำเนินการติดตั้งและขั้นตอนการทำงาน</strong><br>
                     <span style="font-size: 12px; color: #585f67;">
-                      - ค่าแรงเดินสายระบบไฟฟ้าวงจรที่ 2<br>
-                      - งานติดตั้งเซอร์กิตเบรกเกอร์ และต่อเชื่อมอุปกรณ์ชาร์จ<br>
-                      - ตรวจสอบความต้านทานและค่าความต้านทานหลักดินตามมาตรฐานการไฟฟ้า (MEA/PEA)
+                      <strong>ขั้นตอนและขอบเขตการทำงานโดยละเอียด:</strong><br>
+                      ${formattedWorkScope}
                     </span>
                   </td>
                   <td style="text-align: center;">1 งาน</td>
@@ -332,6 +336,11 @@ export async function POST(request: Request) {
             <div class="total-box">
               ยอดสุทธิรวมทั้งสิ้น: ${totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท
               <div class="total-words">(${thaiBahtText})</div>
+            </div>
+
+            <!-- Footer Details -->
+            <div style="font-size: 13px; margin-bottom: 24px; line-height: 1.6;">
+              <strong>การรับประกันงานติดตั้ง:</strong> รับประกันผลงานติดตั้งและระบบไฟฟ้าเป็นระยะเวลา ${warrantyYears}
             </div>
 
             <!-- Footer notification -->

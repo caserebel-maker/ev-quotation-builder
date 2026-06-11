@@ -7,12 +7,20 @@ export default function Home() {
   const [techName, setTechName] = useState("");
   const [techPhone, setTechPhone] = useState("");
   const [clientName, setClientName] = useState("");
-  const [clientAddress, setClientAddress] = useState("");
+  
+  // Pre-fill the installation address as requested
+  const [clientAddress, setClientAddress] = useState(
+    "หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ"
+  );
   
   const [wireLength, setWireLength] = useState("");
   const [breakerSize, setBreakerSize] = useState("40A");
   const [chargerType, setChargerType] = useState("Wallbox (7.4kW)");
   const [equipmentDetails, setEquipmentDetails] = useState("");
+  
+  // New States for Warranty and Scope of Work
+  const [warrantyYears, setWarrantyYears] = useState("1 ปี");
+  const [workScope, setWorkScope] = useState("");
   
   // Initialize costs as empty strings so the technician fills them in themselves
   const [materialCost, setMaterialCost] = useState<number | "">("");
@@ -27,8 +35,8 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!techName || !techPhone || !clientName || !clientAddress || !equipmentDetails) {
-      setErrorMessage("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน รวมถึงรายละเอียดอุปกรณ์");
+    if (!techName || !techPhone || !clientName || !clientAddress || !equipmentDetails || !workScope || !warrantyYears) {
+      setErrorMessage("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน รวมถึงรายละเอียดอุปกรณ์และรายการทำงาน");
       return;
     }
     if (materialCost === "" || laborCost === "") {
@@ -54,6 +62,8 @@ export default function Home() {
           breakerSize,
           chargerType,
           equipmentDetails,
+          warrantyYears,
+          workScope,
           materialCost: Number(materialCost),
           laborCost: Number(laborCost),
           totalAmount,
@@ -187,7 +197,7 @@ export default function Home() {
                     className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
                     placeholder="บ้านเลขที่, แขวง/ตำบล, เขต/อำเภอ..."
                     required
-                    rows={1}
+                    rows={2}
                   />
                 </div>
               </div>
@@ -202,6 +212,8 @@ export default function Home() {
                 <h3 className="font-headline-sm text-2xl font-bold text-[#191c1d]">รายละเอียดการติดตั้ง</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* Row 1 */}
                 <div>
                   <label className="block font-label-md text-sm text-[#585f67] mb-1">ระยะสายไฟ (เมตร)</label>
                   <div className="relative">
@@ -243,8 +255,20 @@ export default function Home() {
                   </select>
                 </div>
                 
-                {/* Equipment & Spec Textarea */}
-                <div className="md:col-span-3">
+                {/* Row 2: Warranty and Equipment details */}
+                <div>
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">การรับประกันงานติดตั้ง</label>
+                  <input
+                    type="text"
+                    value={warrantyYears}
+                    onChange={(e) => setWarrantyYears(e.target.value)}
+                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                    placeholder="เช่น 1 ปี, 2 ปี หรือ ไม่มีการรับประกัน"
+                    required
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
                   <label className="block font-label-md text-sm text-[#585f67] mb-1">รายละเอียดอุปกรณ์และสเปกวัสดุที่จะใช้</label>
                   <textarea
                     value={equipmentDetails}
@@ -252,9 +276,23 @@ export default function Home() {
                     className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
                     placeholder="เช่น สายไฟหลัก Yazaki 10 sq.mm., ท่อร้อยสายไฟตราช้าง, เบรกเกอร์และ RCD Type B ยี่ห้อ ABB..."
                     required
-                    rows={2}
+                    rows={1}
                   />
                 </div>
+
+                {/* Row 3: Scope of Work details */}
+                <div className="md:col-span-3">
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">รายการขั้นตอนการทำงานและขอบเขตงานโดยละเอียด</label>
+                  <textarea
+                    value={workScope}
+                    onChange={(e) => setWorkScope(e.target.value)}
+                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                    placeholder="ระบุขั้นตอนอย่างละเอียด เช่น:&#13;&#10;1. เดินสายไฟเมนจากตู้ออกมาตู้ชาร์จ&#13;&#10;2. ติดตั้งตู้คอนซูเมอร์ย่อยพร้อมอุปกรณ์ป้องกันไฟรั่ว&#13;&#10;3. ปักกราวด์ร็อดทองแดง 2.4 ม. และต่อสายดินตรวจสอบความต้านทาน"
+                    required
+                    rows={3}
+                  />
+                </div>
+
               </div>
             </div>
 
@@ -339,9 +377,11 @@ export default function Home() {
               setTechName("");
               setTechPhone("");
               setClientName("");
-              setClientAddress("");
+              setClientAddress("หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ");
               setWireLength("");
               setEquipmentDetails("");
+              setWarrantyYears("1 ปี");
+              setWorkScope("");
               setMaterialCost("");
               setLaborCost("");
               setErrorMessage("");
