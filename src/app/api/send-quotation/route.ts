@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 // Thai Baht conversion logic
 function arabToThaiBaht(num: number): string {
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
       wireLength,
       breakerSize,
       chargerType,
-      equipments, // Received as array of strings
+      equipments,
       warrantyYears,
       workScope,
       materialCost,
@@ -109,11 +110,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error("Missing RESEND_API_KEY in environment variables");
+    // SMTP credentials
+    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+    const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (!smtpUser || !smtpPass) {
+      console.error("Missing SMTP credentials (SMTP_USER/SMTP_PASS) in environment variables");
       return NextResponse.json(
-        { error: "ระบบไม่ได้กำหนดค่า RESEND_API_KEY" },
+        { error: "ระบบยังไม่ได้กำหนดค่าบัญชีส่งอีเมล (SMTP_USER และ SMTP_PASS) กรุณาตั้งค่าหลังบ้าน" },
         { status: 500 }
       );
     }
@@ -362,36 +368,30 @@ export async function POST(request: Request) {
       </html>
     `;
 
-    // Send using Resend API
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
+    // Configure Nodemailer SMTP Transporter
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465, // SSL for port 465, TLS/none for other ports
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
       },
-      body: JSON.stringify({
-        from: "VoltLink Pro <onboarding@resend.dev>",
-        to: ["tumyen@gmail.com"],
-        subject: subject,
-        html: emailHtml,
-      }),
     });
 
-    const resJson = await response.json();
+    // Send using Nodemailer
+    const info = await transporter.sendMail({
+      from: `"VoltLink Pro" <${smtpUser}>`,
+      to: "tumyen@gmail.com",
+      subject: subject,
+      html: emailHtml,
+    });
 
-    if (!response.ok) {
-      console.error("Resend API Error:", resJson);
-      return NextResponse.json(
-        { error: resJson.message || "ล้มเหลวในการส่งอีเมลผ่าน Resend" },
-        { status: response.status }
-      );
-    }
-
-    return NextResponse.json({ success: true, messageId: resJson.id });
+    return NextResponse.json({ success: true, messageId: info.messageId });
   } catch (err: any) {
-    console.error("send-quotation endpoint error:", err);
+    console.error("send-quotation SMTP error:", err);
     return NextResponse.json(
-      { error: err.message || "เกิดข้อผิดพลาดภายในระบบ" },
+      { error: err.message || "เกิดข้อผิดพลาดในการส่งอีเมลผ่าน SMTP" },
       { status: 500 }
     );
   }
