@@ -12,21 +12,27 @@ export default function Home() {
   const [wireLength, setWireLength] = useState("");
   const [breakerSize, setBreakerSize] = useState("40A");
   const [chargerType, setChargerType] = useState("Wallbox (7.4kW)");
+  const [equipmentDetails, setEquipmentDetails] = useState("");
   
-  const [materialCost, setMaterialCost] = useState(15000);
-  const [laborCost, setLaborCost] = useState(3500);
+  // Initialize costs as empty strings so the technician fills them in themselves
+  const [materialCost, setMaterialCost] = useState<number | "">("");
+  const [laborCost, setLaborCost] = useState<number | "">("");
 
   // Submission UI states
   const [isSending, setIsSending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const totalAmount = (materialCost || 0) + (laborCost || 0);
+  const totalAmount = (Number(materialCost) || 0) + (Number(laborCost) || 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!techName || !techPhone || !clientName || !clientAddress) {
-      setErrorMessage("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน");
+    if (!techName || !techPhone || !clientName || !clientAddress || !equipmentDetails) {
+      setErrorMessage("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน รวมถึงรายละเอียดอุปกรณ์");
+      return;
+    }
+    if (materialCost === "" || laborCost === "") {
+      setErrorMessage("กรุณาระบุค่าอุปกรณ์และค่าแรงติดตั้ง");
       return;
     }
 
@@ -47,8 +53,9 @@ export default function Home() {
           wireLength: wireLength || "0",
           breakerSize,
           chargerType,
-          materialCost,
-          laborCost,
+          equipmentDetails,
+          materialCost: Number(materialCost),
+          laborCost: Number(laborCost),
           totalAmount,
         }),
       });
@@ -235,6 +242,19 @@ export default function Home() {
                     <option value="Portable Charger">Portable Charger</option>
                   </select>
                 </div>
+                
+                {/* Equipment & Spec Textarea */}
+                <div className="md:col-span-3">
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">รายละเอียดอุปกรณ์และสเปกวัสดุที่จะใช้</label>
+                  <textarea
+                    value={equipmentDetails}
+                    onChange={(e) => setEquipmentDetails(e.target.value)}
+                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                    placeholder="เช่น สายไฟหลัก Yazaki 10 sq.mm., ท่อร้อยสายไฟตราช้าง, เบรกเกอร์และ RCD Type B ยี่ห้อ ABB..."
+                    required
+                    rows={2}
+                  />
+                </div>
               </div>
             </div>
 
@@ -258,9 +278,14 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
-                      value={materialCost === 0 ? "" : materialCost}
-                      onChange={(e) => setMaterialCost(parseFloat(e.target.value) || 0)}
-                      className="w-28 bg-transparent border-none text-right font-bold text-lg p-0 text-white focus:ring-0 focus:outline-none focus:border-none focus:shadow-none"
+                      value={materialCost}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setMaterialCost(val === "" ? "" : parseFloat(val) || 0);
+                      }}
+                      placeholder="ระบุจำนวนเงิน"
+                      className="w-36 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/20 rounded-lg text-right font-bold text-lg px-3 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-white/50 placeholder-white/40"
+                      required
                     />
                     <span className="font-label-md text-sm font-semibold">บาท</span>
                   </div>
@@ -270,9 +295,14 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
-                      value={laborCost === 0 ? "" : laborCost}
-                      onChange={(e) => setLaborCost(parseFloat(e.target.value) || 0)}
-                      className="w-28 bg-transparent border-none text-right font-bold text-lg p-0 text-white focus:ring-0 focus:outline-none focus:border-none focus:shadow-none"
+                      value={laborCost}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setLaborCost(val === "" ? "" : parseFloat(val) || 0);
+                      }}
+                      placeholder="ระบุจำนวนเงิน"
+                      className="w-36 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/20 rounded-lg text-right font-bold text-lg px-3 py-1.5 text-white focus:outline-none focus:ring-1 focus:ring-white/50 placeholder-white/40"
+                      required
                     />
                     <span className="font-label-md text-sm font-semibold">บาท</span>
                   </div>
@@ -311,8 +341,9 @@ export default function Home() {
               setClientName("");
               setClientAddress("");
               setWireLength("");
-              setMaterialCost(15000);
-              setLaborCost(3500);
+              setEquipmentDetails("");
+              setMaterialCost("");
+              setLaborCost("");
               setErrorMessage("");
             }}
             className="order-2 md:order-1 flex items-center justify-center text-[#585f67] hover:text-[#191c1d] px-6 py-2 hover:bg-[#d9e0ea] transition-all active:scale-95 rounded-full font-label-md text-sm font-semibold cursor-pointer"

@@ -94,14 +94,15 @@ export async function POST(request: Request) {
       wireLength,
       breakerSize,
       chargerType,
+      equipmentDetails,
       materialCost,
       laborCost,
       totalAmount,
     } = data;
 
-    if (!techName || !clientName || !clientAddress) {
+    if (!techName || !clientName || !clientAddress || !equipmentDetails) {
       return NextResponse.json(
-        { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน" },
+        { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน รวมถึงรายละเอียดอุปกรณ์" },
         { status: 400 }
       );
     }
@@ -304,7 +305,8 @@ export async function POST(request: Request) {
                       - เครื่องชาร์จประเภท: ${chargerType}<br>
                       - ขนาดสายไฟหลัก: สายทองแดง THW 1x10 sq.mm. เดินร้อยท่อแบบหนา<br>
                       - ระยะเดินสายรวม: ${wireLength} เมตร<br>
-                      - เซอร์กิตเบรกเกอร์เมน (MCB): ขนาด ${breakerSize} พร้อมตู้ครอบควบคุมเรียบร้อย
+                      - เซอร์กิตเบรกเกอร์เมน (MCB): ขนาด ${breakerSize} พร้อมตู้ครอบควบคุมเรียบร้อย<br>
+                      - <strong>สเปกอุปกรณ์และวัสดุที่ใช้:</strong> ${equipmentDetails}
                     </span>
                   </td>
                   <td style="text-align: center;">1 งาน</td>
