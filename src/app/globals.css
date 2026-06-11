@@ -1,83 +1,90 @@
 @import "tailwindcss";
 
+@theme {
+  --color-error: #ba1a1a;
+  --color-on-primary-container: #dfe3ff;
+  --color-primary-fixed-dim: #b7c4ff;
+  --color-tertiary-fixed: #ffdbd2;
+  --color-on-primary-fixed: #001452;
+  --color-background: #f8f9fa;
+  --color-inverse-surface: #2e3132;
+  --color-on-primary: #ffffff;
+  --color-primary: #003ec7;
+  --color-error-container: #ffdad6;
+  --color-on-secondary: #ffffff;
+  --color-primary-container: #0052ff;
+  --color-on-tertiary-fixed-variant: #891e00;
+  --color-inverse-on-surface: #f0f1f2;
+  --color-tertiary: #952200;
+  --color-surface-dim: #d9dadb;
+  --color-primary-fixed: #dde1ff;
+  --color-on-secondary-fixed: #151c23;
+  --color-inverse-primary: #b7c4ff;
+  --color-on-error: #ffffff;
+  --color-surface-bright: #f8f9fa;
+  --color-secondary-fixed: #dce3ec;
+  --color-tertiary-fixed-dim: #ffb4a1;
+  --color-on-secondary-container: #5c636b;
+  --color-on-secondary-fixed-variant: #40474f;
+  --color-surface-container-highest: #e1e3e4;
+  --color-outline-variant: #c3c5d9;
+  --color-surface: #f8f9fa;
+  --color-secondary-container: #d9e0ea;
+  --color-on-error-container: #93000a;
+  --color-on-surface: #191c1d;
+  --color-surface-tint: #004ced;
+  --color-surface-container-lowest: #ffffff;
+  --color-secondary-fixed-dim: #c0c7d0;
+  --color-surface-container: #edeeef;
+  --color-on-tertiary-container: #ffddd5;
+  --color-secondary: #585f67;
+  --color-outline: #737688;
+  --color-on-primary-fixed-variant: #0038b6;
+  --color-surface-container-high: #e7e8e9;
+  --color-on-tertiary: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-variant: #e1e3e4;
+  --color-on-tertiary-fixed: #3c0800;
+  --color-tertiary-container: #bf3003;
+  --color-on-background: #191c1d;
+  --color-on-surface-variant: #434656;
+
+  /* Custom Font Families */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-headline-sm: 'Hanken Grotesk', sans-serif;
+  --font-headline-md: 'Hanken Grotesk', sans-serif;
+  --font-headline-lg: 'Hanken Grotesk', sans-serif;
+  --font-label-md: 'Geist', sans-serif;
+  --font-label-sm: 'Geist', sans-serif;
+  --font-body-md: 'Inter', sans-serif;
+  --font-body-lg: 'Inter', sans-serif;
+  
+  /* Layout Spacing */
+  --spacing-gutter: 24px;
+  --spacing-margin-desktop: 40px;
+  --spacing-margin-mobile: 16px;
+  --spacing-stack-lg: 24px;
+  --spacing-stack-md: 12px;
+  --spacing-stack-sm: 4px;
+  --spacing-container-max: 1280px;
+  --spacing-base: 8px;
+}
+
 @layer base {
   body {
-    font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+    color: #191c1d;
+    -webkit-font-smoothing: antialiased;
+    min-height: max(884px, 100dvh);
   }
 }
 
-/* Glassmorphism custom styling utilities */
-.glass {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-.glass-light {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Scrollbar styles for form */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.3);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
-
-/* Custom print media query to print only the quotation preview */
-@media print {
-  /* Hide everything */
-  body * {
-    visibility: hidden;
-  }
-
-  /* Show only print-area and its children */
-  .print-area, .print-area * {
-    visibility: visible;
-  }
-
-  /* Position print-area at top left */
-  .print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: white !important;
-    color: black !important;
-  }
-
-  /* Force background colors during printing */
-  .print-area {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  /* Reset styling for elements inside the print area to make it read perfectly in print */
-  .print-area input, .print-area textarea, .print-area select {
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    color: black !important;
-  }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #003ec7;
+  box-shadow: 0 0 0 2px rgba(0, 62, 199, 0.1);
 }

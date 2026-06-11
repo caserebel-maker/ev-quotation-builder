@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "เครื่องมือสร้างใบเสนอราคา ติดตั้งวงจรที่ 2 EV Charger",
-  description: "ระบบสร้างและส่งใบเสนอราคาติดตั้งวงจรที่ 2 สำหรับชาร์จรถยนต์ไฟฟ้า (EV) ไปยังอีเมลอัตโนมัติ",
+  title: "VoltLink Pro - Quotation System",
+  description: "ระบบสร้างและส่งใบเสนอราคาติดตั้งระบบไฟฟ้าวงจรที่ 2 สำหรับชาร์จรถ EV",
 };
 
 export default function RootLayout({
@@ -12,16 +12,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th">
+    <html lang="th" className="light">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;500&family=Geist:wght@400;500;600&display=swap" 
+          rel="stylesheet"
+        />
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" 
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased min-h-screen bg-slate-900 text-slate-100">
+      <body className="min-h-screen bg-[#f8f9fa] text-[#191c1d] antialiased">
         {children}
       </body>
     </html>
