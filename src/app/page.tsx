@@ -24,6 +24,7 @@ export default function Home() {
   
   const [warrantyYears, setWarrantyYears] = useState("1 ปี");
   const [workScope, setWorkScope] = useState("");
+  const [earliestStartDate, setEarliestStartDate] = useState("");
   
   // Initialize costs as empty strings so the technician fills them in themselves
   const [materialCost, setMaterialCost] = useState<number | "">("");
@@ -95,8 +96,8 @@ export default function Home() {
     // Filter out empty equipment inputs
     const activeEquipments = equipments.filter(eq => eq.trim() !== "");
     
-    if (!techName || !techPhone || !clientName || !clientAddress || !workScope || !warrantyYears) {
-      setErrorMessage("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน รวมถึงขั้นตอนการทำงาน");
+    if (!techName || !techPhone || !clientName || !clientAddress || !workScope || !warrantyYears || !earliestStartDate) {
+      setErrorMessage("กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน รวมถึงขั้นตอนการทำงานและวันที่พร้อมเริ่มงาน");
       return;
     }
     if (activeEquipments.length === 0) {
@@ -130,6 +131,7 @@ export default function Home() {
           equipments: activeEquipments,
           warrantyYears,
           workScope,
+          earliestStartDate,
           materialCost: Number(materialCost),
           laborCost: Number(laborCost),
           totalAmount,
@@ -401,7 +403,18 @@ export default function Home() {
                   </select>
                 </div>
                 
-                {/* Row 2: Warranty & Scope */}
+                {/* Row 2: Warranty & Scope & Start Date */}
+                <div className="md:col-span-3">
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">วันที่สามารถเริ่มงานได้เร็วที่สุด</label>
+                  <input
+                    type="text"
+                    value={earliestStartDate}
+                    onChange={(e) => setEarliestStartDate(e.target.value)}
+                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                    placeholder="เช่น เริ่มได้ทันที, ภายใน 3 วัน หรือ ระบุวันที่..."
+                    required
+                  />
+                </div>
                 <div className="md:col-span-3">
                   <label className="block font-label-md text-sm text-[#585f67] mb-1">การรับประกันงานติดตั้ง</label>
                   <input
@@ -584,6 +597,7 @@ export default function Home() {
               setEquipments(Array(10).fill(""));
               setWarrantyYears("1 ปี");
               setWorkScope("");
+              setEarliestStartDate("");
               setMaterialCost("");
               setLaborCost("");
               setPastWorks([]);

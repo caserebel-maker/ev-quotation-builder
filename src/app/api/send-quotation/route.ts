@@ -101,15 +101,16 @@ export async function POST(request: Request) {
       equipments,
       warrantyYears,
       workScope,
+      earliestStartDate,
       materialCost,
       laborCost,
       totalAmount,
       pastWorks,
     } = data;
 
-    if (!techName || !clientName || !clientAddress || !equipments || !Array.isArray(equipments) || equipments.length === 0 || !workScope || !warrantyYears) {
+    if (!techName || !clientName || !clientAddress || !equipments || !Array.isArray(equipments) || equipments.length === 0 || !workScope || !warrantyYears || !earliestStartDate) {
       return NextResponse.json(
-        { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน รวมถึงรายละเอียดอุปกรณ์การรับประกันและขั้นตอนงาน" },
+        { error: "ข้อมูลที่จำเป็นไม่ครบถ้วน รวมถึงรายละเอียดอุปกรณ์การรับประกัน ขั้นตอนงาน และวันที่เริ่มงาน" },
         { status: 400 }
       );
     }
@@ -442,6 +443,7 @@ export async function POST(request: Request) {
 
             <!-- Footer Details -->
             <div style="font-size: 13px; margin-bottom: 24px; line-height: 1.6;">
+              <strong>วันที่สามารถเริ่มงานได้เร็วที่สุด:</strong> ${earliestStartDate}<br>
               <strong>การรับประกันงานติดตั้ง:</strong> รับประกันผลงานติดตั้งและระบบไฟฟ้าเป็นระยะเวลา ${warrantyYears}
             </div>
 
