@@ -37,6 +37,9 @@ export default function Home() {
   // Past works images state
   const [pastWorks, setPastWorks] = useState<string[]>([]);
 
+  // Lightbox modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handlePastWorksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
@@ -187,6 +190,21 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Important Condition Card */}
+        <div className="bg-red-50 border-2 border-red-300 p-5 rounded-lg flex items-start gap-3 mb-6">
+          <span className="material-symbols-outlined text-red-600 text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
+            warning
+          </span>
+          <div>
+            <h4 className="font-headline-sm text-base font-bold text-red-700 mb-1">
+              เงื่อนไขการรับงานและชำระเงิน (โปรดอ่านและทำความเข้าใจก่อนประเมินราคา)
+            </h4>
+            <p className="font-body-md text-sm text-red-700 font-bold leading-relaxed">
+              ทางผู้ว่าจ้างไม่มีนโยบายการจ่ายค่ามัดจำล่วงหน้าใด ๆ ทั้งสิ้น หากช่างได้เข้าสำรวจหน้างานและประเมินราคารวมสุทธิเรียบร้อยแล้ว สามารถเริ่มดำเนินการติดตั้งได้ทันที โดยจะชำระเงินเต็มจำนวนหลังจากเสร็จสิ้นการติดตั้งและส่งมอบงานผ่านแล้วเท่านั้น หากช่างท่านใดไม่สะดวกในเงื่อนไขการทำงานและชำระเงินรูปแบบนี้ สามารถปฏิเสธไม่รับงานนี้ได้ทันทีโดยไม่มีข้อผูกมัดใด ๆ
+            </p>
+          </div>
+        </div>
+
         {/* Error notification banner */}
         {errorMessage && (
           <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2">
@@ -304,12 +322,18 @@ export default function Home() {
                     <span className="material-symbols-outlined text-[#003ec7] text-lg">location_on</span>
                     ดูโลเคชันแผนที่หน้างาน (Google Maps)
                   </a>
-                  <div className="relative w-full h-44 rounded-lg overflow-hidden border border-[#c3c5d9]">
+                  <div 
+                    className="relative w-full h-44 rounded-lg overflow-hidden border border-[#c3c5d9] cursor-zoom-in group" 
+                    onClick={() => setIsModalOpen(true)}
+                  >
                     <img
                       src="/images/site-photo.png"
                       alt="รูปภาพหน้างานจริง"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute bottom-2 right-2 bg-black/60 text-white rounded-full p-1.5 flex items-center justify-center shadow-md">
+                      <span className="material-symbols-outlined text-sm">zoom_in</span>
+                    </div>
                   </div>
                   <div className="flex flex-col gap-1.5 text-xs text-[#585f67] bg-[#f3f4f5] p-3 rounded-lg border border-[#c3c5d9]">
                     <div className="flex items-center gap-2">
@@ -541,20 +565,6 @@ export default function Home() {
             
           </div>
 
-          {/* Important Condition Card */}
-          <div className="bg-red-50 border-2 border-red-300 p-5 rounded-lg flex items-start gap-3">
-            <span className="material-symbols-outlined text-red-600 text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
-              warning
-            </span>
-            <div>
-              <h4 className="font-headline-sm text-base font-bold text-red-700 mb-1">
-                เงื่อนไขการรับงานและชำระเงิน (โปรดอ่านและทำความเข้าใจก่อนประเมินราคา)
-              </h4>
-              <p className="font-body-md text-sm text-red-700 font-bold leading-relaxed">
-                ทางผู้ว่าจ้างไม่มีนโยบายการจ่ายค่ามัดจำล่วงหน้าใด ๆ ทั้งสิ้น หากช่างได้เข้าสำรวจหน้างานและประเมินราคารวมสุทธิเรียบร้อยแล้ว สามารถเริ่มดำเนินการติดตั้งได้ทันที โดยจะชำระเงินเต็มจำนวนหลังจากเสร็จสิ้นการติดตั้งและส่งมอบงานผ่านแล้วเท่านั้น หากช่างท่านใดไม่สะดวกในเงื่อนไขการทำงานและชำระเงินรูปแบบนี้ สามารถปฏิเสธไม่รับงานนี้ได้ทันทีโดยไม่มีข้อผูกมัดใด ๆ
-              </p>
-            </div>
-          </div>
         </form>
       </main>
 
@@ -620,6 +630,33 @@ export default function Home() {
           </button>
         </div>
       </div>
+
+      {/* Lightbox Modal for Site Photo */}
+      {isModalOpen && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div className="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center animate-fade-in">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute -top-12 right-0 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 transition-all cursor-pointer flex items-center justify-center"
+              style={{ width: '40px', height: '40px' }}
+            >
+              <span className="material-symbols-outlined text-white">close</span>
+            </button>
+            <img
+              src="/images/site-photo.png"
+              alt="รูปภาพหน้างานจริงขนาดใหญ่"
+              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <p className="text-white/80 font-body-md text-sm mt-4 text-center bg-black/40 px-4 py-2 rounded-full border border-white/10">
+              รูปภาพหน้างานจริง (บ้านของลูกค้า)
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
