@@ -41,6 +41,8 @@ export default function Home() {
 
   // Lightbox modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImgSrc, setModalImgSrc] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
 
   const handlePastWorksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -361,17 +363,39 @@ export default function Home() {
                     <span className="material-symbols-outlined text-[#003ec7] text-lg">location_on</span>
                     ดูโลเคชันแผนที่หน้างาน (Google Maps)
                   </a>
-                  <div 
-                    className="relative w-full h-44 rounded-lg overflow-hidden border border-[#c3c5d9] cursor-zoom-in group" 
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    <img
-                      src="/images/site-photo.png"
-                      alt="รูปภาพหน้างานจริง"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute bottom-2 right-2 bg-black/60 text-white rounded-full p-1.5 flex items-center justify-center shadow-md">
-                      <span className="material-symbols-outlined text-sm">zoom_in</span>
+                  <div className="grid grid-cols-12 gap-3">
+                    <div 
+                      className="col-span-8 relative h-44 rounded-lg overflow-hidden border border-[#c3c5d9] cursor-zoom-in group" 
+                      onClick={() => {
+                        setModalImgSrc("/images/site-photo.png");
+                        setModalTitle("รูปภาพหน้างานจริง (บ้านของลูกค้า)");
+                        setIsModalOpen(true);
+                      }}
+                    >
+                      <img
+                        src="/images/site-photo.png"
+                        alt="รูปภาพหน้างานจริง"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute bottom-2 right-2 bg-black/60 text-white rounded-full p-1.5 flex items-center justify-center shadow-md">
+                        <span className="material-symbols-outlined text-sm">zoom_in</span>
+                      </div>
+                    </div>
+                    
+                    <div 
+                      className="col-span-4 relative h-44 rounded-lg overflow-hidden border border-[#c3c5d9] bg-[#f8f9fa] flex items-center justify-center p-2 cursor-zoom-in group"
+                      onClick={() => {
+                        setModalImgSrc("/images/charger-model.png");
+                        setModalTitle("เครื่องชาร์จที่ผู้ว่าจ้างจัดเตรียมไว้ (GWM Wallbox)");
+                        setIsModalOpen(true);
+                      }}
+                    >
+                      <img
+                        src="/images/charger-model.png"
+                        alt="เครื่องชาร์จของลูกค้า"
+                        className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-black/60 text-[9px] text-white px-2 py-0.5 rounded-full font-bold whitespace-nowrap">เครื่องชาร์จ GWM</span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-1.5 text-xs text-[#585f67] bg-[#f3f4f5] p-3 rounded-lg border border-[#c3c5d9]">
@@ -632,7 +656,6 @@ export default function Home() {
               setClientAddress("หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ");
               setWireLength("");
               setEquipments(Array(10).fill(""));
-              setWarrantyYears("1 - 2 ปี"); // Wait, original setWarrantyYears reset is "1 ปี", let's keep it as is
               setWarrantyYears("1 ปี");
               setWorkScope("");
               setEarliestStartDate("");
@@ -684,7 +707,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Lightbox Modal for Site Photo */}
+      {/* Lightbox Modal for Site Photo & Charger */}
       {isModalOpen && (
         <div 
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
@@ -699,13 +722,13 @@ export default function Home() {
               <span className="material-symbols-outlined text-white">close</span>
             </button>
             <img
-              src="/images/site-photo.png"
-              alt="รูปภาพหน้างานจริงขนาดใหญ่"
+              src={modalImgSrc}
+              alt={modalTitle}
               className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl border border-white/10"
               onClick={(e) => e.stopPropagation()}
             />
             <p className="text-white/80 font-body-md text-sm mt-4 text-center bg-black/40 px-4 py-2 rounded-full border border-white/10">
-              รูปภาพหน้างานจริง (บ้านของลูกค้า)
+              {modalTitle}
             </p>
           </div>
         </div>

@@ -166,6 +166,14 @@ export async function POST(request: Request) {
       cid: "sitePhoto",
     });
 
+    // Attach GWM charger model image
+    const chargerModelPath = path.join(process.cwd(), "public", "images", "charger-model.png");
+    attachments.push({
+      filename: "charger-model.png",
+      path: chargerModelPath,
+      cid: "chargerModel",
+    });
+
     // Process past works
     let pastWorksHtml = "";
     if (pastWorks && Array.isArray(pastWorks) && pastWorks.length > 0) {
@@ -390,9 +398,23 @@ export async function POST(request: Request) {
                   📍 ดูโลเคชันแผนที่หน้างาน (Google Maps)
                 </a>
               </div>
-              <div style="max-width: 440px; border-radius: 8px; overflow: hidden; border: 1px solid #c3c5d9; margin-bottom: 12px;">
-                <img src="cid:sitePhoto" alt="รูปภาพหน้างานจริง" style="width: 100%; display: block;" />
-              </div>
+              
+              <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+                <tr>
+                  <td style="width: 70%; padding-right: 8px; vertical-align: top;">
+                    <div style="border-radius: 8px; overflow: hidden; border: 1px solid #c3c5d9;">
+                      <img src="cid:sitePhoto" alt="รูปภาพหน้างานจริง" style="width: 100%; display: block;" />
+                    </div>
+                  </td>
+                  <td style="width: 30%; padding-left: 8px; vertical-align: top;">
+                    <div style="border-radius: 8px; overflow: hidden; border: 1px solid #c3c5d9; background-color: #ffffff; padding: 8px; text-align: center;">
+                      <img src="cid:chargerModel" alt="เครื่องชาร์จ GWM" style="max-width: 100%; max-height: 200px; display: inline-block;" />
+                      <div style="font-size: 10px; font-weight: bold; color: #585f67; margin-top: 4px;">เครื่องชาร์จ GWM</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
               <div style="font-size: 12px; color: #585f67; line-height: 1.5; padding-top: 8px; border-top: 1px dashed #c3c5d9;">
                 🔴 <strong>กรอบสีแดง:</strong> ตำแหน่งติดตั้งมิเตอร์ไฟฟ้า<br>
                 🔵 <strong>กรอบสีฟ้า:</strong> จุดที่จะติดตั้ง Home Charger
