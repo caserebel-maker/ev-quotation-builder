@@ -6,6 +6,8 @@ export default function Home() {
   // Form states
   const [techName, setTechName] = useState("");
   const [techPhone, setTechPhone] = useState("");
+  const [techLineId, setTechLineId] = useState("");
+  const [techFacebook, setTechFacebook] = useState("");
   const [clientName, setClientName] = useState("");
   
   // Pre-fill the installation address as requested
@@ -15,7 +17,7 @@ export default function Home() {
   
   const [wireLength, setWireLength] = useState("");
   const [breakerSize, setBreakerSize] = useState("40A");
-  const [chargerType, setChargerType] = useState("Wallbox (7.4kW)");
+  const [chargerType, setChargerType] = useState("เครื่องชาร์จของลูกค้าเอง (7.4kW)");
   
   // Separate equipment list into 10 fields
   const [equipments, setEquipments] = useState<string[]>(Array(10).fill(""));
@@ -95,6 +97,8 @@ export default function Home() {
         body: JSON.stringify({
           techName,
           techPhone,
+          techLineId,
+          techFacebook,
           clientName,
           clientAddress,
           wireLength: wireLength || "0",
@@ -206,6 +210,26 @@ export default function Home() {
                     required
                   />
                 </div>
+                <div>
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">LINE ID</label>
+                  <input
+                    type="text"
+                    value={techLineId}
+                    onChange={(e) => setTechLineId(e.target.value)}
+                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                    placeholder="ระบุ Line ID"
+                  />
+                </div>
+                <div>
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">Facebook</label>
+                  <input
+                    type="text"
+                    value={techFacebook}
+                    onChange={(e) => setTechFacebook(e.target.value)}
+                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                    placeholder="ระบุ Facebook (เช่น ชื่อโปรไฟล์ หรือเพจ)"
+                  />
+                </div>
               </div>
             </div>
 
@@ -262,10 +286,20 @@ export default function Home() {
                   </a>
                   <div className="relative w-full h-44 rounded-lg overflow-hidden border border-[#c3c5d9]">
                     <img
-                      src="/images/site-photo.jpg"
+                      src="/images/site-photo.png"
                       alt="รูปภาพหน้างานจริง"
                       className="w-full h-full object-cover"
                     />
+                  </div>
+                  <div className="flex flex-col gap-1.5 text-xs text-[#585f67] bg-[#f3f4f5] p-3 rounded-lg border border-[#c3c5d9]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#d32f2f] shrink-0 inline-block"></span>
+                      <span><strong>กรอบสีแดง:</strong> ตำแหน่งติดตั้งมิเตอร์ไฟฟ้า</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#1976d2] shrink-0 inline-block"></span>
+                      <span><strong>กรอบสีฟ้า:</strong> จุดที่จะติดตั้ง Home Charger</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -310,16 +344,16 @@ export default function Home() {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-label-md text-sm text-[#585f67] mb-1">ประเภทอุปกรณ์ชาร์จ</label>
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">ประเภทเครื่องชาร์จ (ลูกค้ามีอุปกรณ์อยู่แล้ว)</label>
                   <select
                     value={chargerType}
                     onChange={(e) => setChargerType(e.target.value)}
                     className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.5em_1.5em] bg-[right_1rem_center] bg-no-repeat"
                   >
-                    <option value="Wallbox (7.4kW)">Wallbox (7.4kW)</option>
-                    <option value="Wallbox (11kW)">Wallbox (11kW)</option>
-                    <option value="Wallbox (22kW)">Wallbox (22kW)</option>
-                    <option value="Portable Charger">Portable Charger</option>
+                    <option value="เครื่องชาร์จของลูกค้าเอง (7.4kW)">เครื่องชาร์จของลูกค้าเอง (7.4kW)</option>
+                    <option value="เครื่องชาร์จของลูกค้าเอง (11kW)">เครื่องชาร์จของลูกค้าเอง (11kW)</option>
+                    <option value="เครื่องชาร์จของลูกค้าเอง (22kW)">เครื่องชาร์จของลูกค้าเอง (22kW)</option>
+                    <option value="เครื่องชาร์จของลูกค้าเอง (Portable)">เครื่องชาร์จของลูกค้าเอง (Portable)</option>
                   </select>
                 </div>
                 
@@ -507,6 +541,8 @@ export default function Home() {
             onClick={() => {
               setTechName("");
               setTechPhone("");
+              setTechLineId("");
+              setTechFacebook("");
               setClientName("");
               setClientAddress("หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ");
               setWireLength("");

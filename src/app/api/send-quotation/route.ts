@@ -91,6 +91,8 @@ export async function POST(request: Request) {
     const {
       techName,
       techPhone,
+      techLineId,
+      techFacebook,
       clientName,
       clientAddress,
       wireLength,
@@ -144,9 +146,9 @@ export async function POST(request: Request) {
     const attachments = [];
     
     // Attach client site photo
-    const sitePhotoPath = path.join(process.cwd(), "public", "images", "site-photo.jpg");
+    const sitePhotoPath = path.join(process.cwd(), "public", "images", "site-photo.png");
     attachments.push({
-      filename: "site-photo.jpg",
+      filename: "site-photo.png",
       path: sitePhotoPath,
       cid: "sitePhoto",
     });
@@ -355,7 +357,9 @@ export async function POST(request: Request) {
                 <td>
                   <h3>ช่างผู้ติดตั้ง (Technician)</h3>
                   <strong>ชื่อช่าง:</strong> ${techName}<br>
-                  <strong>เบอร์โทรศัพท์:</strong> ${techPhone}
+                  <strong>เบอร์โทรศัพท์:</strong> ${techPhone}<br>
+                  ${techLineId ? `<strong>LINE ID:</strong> ${techLineId}<br>` : ""}
+                  ${techFacebook ? `<strong>Facebook:</strong> ${techFacebook}` : ""}
                 </td>
                 <td>
                   <h3>ข้อมูลลูกค้า (Customer)</h3>
@@ -373,8 +377,12 @@ export async function POST(request: Request) {
                   📍 ดูโลเคชันแผนที่หน้างาน (Google Maps)
                 </a>
               </div>
-              <div style="max-width: 400px; border-radius: 8px; overflow: hidden; border: 1px solid #c3c5d9;">
+              <div style="max-width: 440px; border-radius: 8px; overflow: hidden; border: 1px solid #c3c5d9; margin-bottom: 12px;">
                 <img src="cid:sitePhoto" alt="รูปภาพหน้างานจริง" style="width: 100%; display: block;" />
+              </div>
+              <div style="font-size: 12px; color: #585f67; line-height: 1.5; padding-top: 8px; border-top: 1px dashed #c3c5d9;">
+                🔴 <strong>กรอบสีแดง:</strong> ตำแหน่งติดตั้งมิเตอร์ไฟฟ้า<br>
+                🔵 <strong>กรอบสีฟ้า:</strong> จุดที่จะติดตั้ง Home Charger
               </div>
             </div>
 
