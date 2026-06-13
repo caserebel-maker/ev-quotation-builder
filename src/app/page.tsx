@@ -40,6 +40,26 @@ export default function Home() {
   const handlePastWorksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
+      
+      // Check total files count (current + incoming)
+      if (pastWorks.length + filesArray.length > 5) {
+        setErrorMessage("สามารถอัปโหลดรูปภาพผลงานได้สูงสุดไม่เกิน 5 รูปครับ");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Check size limit for each file (3 MB)
+      const MAX_SIZE = 3 * 1024 * 1024; // 3 MB
+      const oversizedFiles = filesArray.filter(file => file.size > MAX_SIZE);
+      if (oversizedFiles.length > 0) {
+        setErrorMessage("ขนาดของแต่ละรูปภาพต้องไม่เกิน 3 MB ครับ");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      // Clear any previous error message if validations pass
+      setErrorMessage("");
+
       filesArray.forEach((file) => {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -416,7 +436,7 @@ export default function Home() {
                     อัปโหลดรูปภาพผลงานที่เคยทำ (Past Works)
                   </label>
                   <p className="font-body-md text-xs text-[#585f67] mb-3">
-                    อัปโหลดรูปภาพผลงานติดตั้งที่ผ่านมาของช่างเพื่อแสดงประวัติผลงาน (เลือกอัปโหลดได้หลายรูป)
+                    อัปโหลดรูปภาพผลงานติดตั้งที่ผ่านมาของช่างเพื่อแสดงประวัติผลงาน (สูงสุด 5 รูป, รูปละไม่เกิน 3 MB)
                   </p>
                   <div className="flex flex-col gap-3">
                     <input
