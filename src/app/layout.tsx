@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VoltLink Pro - Quotation System",
+  title: "ระบบเสนอราคาติดตั้งจุดชาร์จ EV",
   description: "ระบบสร้างและส่งใบเสนอราคาติดตั้งระบบไฟฟ้าวงจรที่ 2 สำหรับชาร์จรถ EV",
 };
 

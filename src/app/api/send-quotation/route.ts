@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import path from "path";
 
 // Thai Baht conversion logic
 function arabToThaiBaht(num: number): string {
@@ -101,6 +102,7 @@ export async function POST(request: Request) {
       materialCost,
       laborCost,
       totalAmount,
+      pastWorks,
     } = data;
 
     if (!techName || !clientName || !clientAddress || !equipments || !Array.isArray(equipments) || equipments.length === 0 || !workScope || !warrantyYears) {
@@ -138,6 +140,68 @@ export async function POST(request: Request) {
     const dd = String(today.getDate()).padStart(2, "0");
     const quotationNumber = `QT-${yy}${mm}${dd}-${randomSuffix}`;
 
+    // Process attachments
+    const attachments = [];
+    
+    // Attach client site photo
+    const sitePhotoPath = path.join(process.cwd(), "public", "images", "site-photo.jpg");
+    attachments.push({
+      filename: "site-photo.jpg",
+      path: sitePhotoPath,
+      cid: "sitePhoto",
+    });
+
+    // Process past works
+    let pastWorksHtml = "";
+    if (pastWorks && Array.isArray(pastWorks) && pastWorks.length > 0) {
+      pastWorksHtml += `
+        <h3 style="color: #003ec7; font-size: 15px; margin-bottom: 10px; font-weight: bold;">รูปภาพผลงานติดตั้งที่ผ่านมา (Past Works)</h3>
+        <div style="background-color: #f3f4f5; border: 1px solid #c3c5d9; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+          <table style="width: 100%; border-collapse: collapse;">
+      `;
+      
+      for (let i = 0; i < pastWorks.length; i += 3) {
+        pastWorksHtml += "<tr>";
+        for (let j = 0; j < 3; j++) {
+          const idx = i + j;
+          if (idx < pastWorks.length) {
+            const pwBase64 = pastWorks[idx];
+            const matches = pwBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            if (matches && matches.length === 3) {
+              const contentType = matches[1];
+              const base64Data = matches[2];
+              const extension = contentType.split("/")[1] || "jpg";
+              const cid = `pastWork${idx}`;
+              
+              attachments.push({
+                filename: `past-work-${idx}.${extension}`,
+                content: Buffer.from(base64Data, "base64"),
+                cid: cid,
+              });
+              
+              pastWorksHtml += `
+                <td style="padding: 6px; width: 33.33%; vertical-align: top;">
+                  <div style="border-radius: 6px; overflow: hidden; border: 1px solid #c3c5d9;">
+                    <img src="cid:${cid}" alt="ผลงานที่ ${idx + 1}" style="width: 100%; display: block;" />
+                  </div>
+                </td>
+              `;
+            } else {
+              pastWorksHtml += `<td style="padding: 6px; width: 33.33%;"></td>`;
+            }
+          } else {
+            pastWorksHtml += `<td style="padding: 6px; width: 33.33%;"></td>`;
+          }
+        }
+        pastWorksHtml += "</tr>";
+      }
+      
+      pastWorksHtml += `
+          </table>
+        </div>
+      `;
+    }
+
     const thaiBahtText = arabToThaiBaht(totalAmount);
     const subject = `ใบเสนอราคาติดตั้งวงจรที่ 2 EV - คุณ ${clientName} (เลขที่: ${quotationNumber})`;
 
@@ -149,14 +213,14 @@ export async function POST(request: Request) {
       .map((eq: string, idx: number) => `<li style="margin-bottom: 4px;">${eq}</li>`)
       .join("");
 
-    // Generate beautifully styled HTML Quotation Email matching VoltLink Pro theme
+    // Generate beautifully styled HTML Quotation Email matching theme
     const emailHtml = `
       <!DOCTYPE html>
       <html lang="th">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ใบเสนอราคา VoltLink Pro</title>
+        <title>ใบเสนอราคาติดตั้งจุดชาร์จ EV</title>
         <style>
           body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -272,7 +336,7 @@ export async function POST(request: Request) {
       <body>
         <div class="container">
           <div class="header">
-            <h1>VoltLink Pro</h1>
+            <h1>ใบเสนอราคาติดตั้งระบบไฟฟ้า EV</h1>
             <p>ใบเสนอราคาติดตั้งระบบไฟฟ้าวงจรที่ 2 สำหรับชาร์จรถ EV</p>
           </div>
           <div class="content">
@@ -300,6 +364,19 @@ export async function POST(request: Request) {
                 </td>
               </tr>
             </table>
+
+            <!-- Customer Site Photo & Location Map -->
+            <h3 style="color: #003ec7; font-size: 15px; margin-bottom: 10px; font-weight: bold;">แผนที่และรูปภาพหน้างานจริงที่บ้านของลูกค้า</h3>
+            <div style="background-color: #f3f4f5; border: 1px solid #c3c5d9; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+              <div style="margin-bottom: 12px;">
+                <a href="https://maps.app.goo.gl/XpSUWmP9L9vHsnUX9" target="_blank" style="color: #003ec7; text-decoration: underline; font-weight: bold; font-size: 13px;">
+                  📍 ดูโลเคชันแผนที่หน้างาน (Google Maps)
+                </a>
+              </div>
+              <div style="max-width: 400px; border-radius: 8px; overflow: hidden; border: 1px solid #c3c5d9;">
+                <img src="cid:sitePhoto" alt="รูปภาพหน้างานจริง" style="width: 100%; display: block;" />
+              </div>
+            </div>
 
             <!-- Materials & Scope specifications table -->
             <h3 style="color: #003ec7; font-size: 15px; margin-bottom: 10px; font-weight: bold;">รายละเอียดวัสดุและอุปกรณ์ทางเทคนิค</h3>
@@ -352,6 +429,9 @@ export async function POST(request: Request) {
               <div class="total-words">(${thaiBahtText})</div>
             </div>
 
+            <!-- Past Works Gallery -->
+            ${pastWorksHtml}
+
             <!-- Footer Details -->
             <div style="font-size: 13px; margin-bottom: 24px; line-height: 1.6;">
               <strong>การรับประกันงานติดตั้ง:</strong> รับประกันผลงานติดตั้งและระบบไฟฟ้าเป็นระยะเวลา ${warrantyYears}
@@ -360,7 +440,7 @@ export async function POST(request: Request) {
             <!-- Footer notification -->
             <div class="footer-note">
               <strong>ข้อชี้แจงมาตรฐานความปลอดภัย:</strong><br>
-              ใบเสนอราคานี้จัดทำขึ้นผ่านระบบ VoltLink Pro และได้ส่งสำเนาเข้าสู่ฐานข้อมูลกลางที่ <strong>tumyen@gmail.com</strong> เรียบร้อยแล้ว เพื่อส่งมอบต่อให้วิศวกรไฟฟ้าในการตรวจสอบคุณภาพและระดับความปลอดภัยตามเกณฑ์มาตรฐานทางวิศวกรรมต่อไป
+              ใบเสนอราคานี้จัดทำขึ้นผ่านระบบเสนอราคาติดตั้งจุดชาร์จ EV และได้ส่งสำเนาเข้าสู่ฐานข้อมูลกลางที่ <strong>tumyen@gmail.com</strong> เรียบร้อยแล้ว เพื่อส่งมอบต่อให้วิศวกรไฟฟ้าในการตรวจสอบคุณภาพและระดับความปลอดภัยตามเกณฑ์มาตรฐานทางวิศวกรรมต่อไป
             </div>
           </div>
         </div>
@@ -381,10 +461,11 @@ export async function POST(request: Request) {
 
     // Send using Nodemailer
     const info = await transporter.sendMail({
-      from: `"VoltLink Pro" <${smtpUser}>`,
+      from: `"ระบบเสนอราคาติดตั้งจุดชาร์จ EV" <${smtpUser}>`,
       to: "tumyen@gmail.com",
       subject: subject,
       html: emailHtml,
+      attachments: attachments,
     });
 
     return NextResponse.json({ success: true, messageId: info.messageId });

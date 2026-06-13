@@ -32,6 +32,28 @@ export default function Home() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Past works images state
+  const [pastWorks, setPastWorks] = useState<string[]>([]);
+
+  const handlePastWorksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      filesArray.forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            setPastWorks((prev) => [...prev, reader.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removePastWork = (index: number) => {
+    setPastWorks((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
   const totalAmount = (Number(materialCost) || 0) + (Number(laborCost) || 0);
 
   const handleEquipmentChange = (idx: number, value: string) => {
@@ -84,6 +106,7 @@ export default function Home() {
           materialCost: Number(materialCost),
           laborCost: Number(laborCost),
           totalAmount,
+          pastWorks,
         }),
       });
 
@@ -117,7 +140,7 @@ export default function Home() {
             <span className="material-symbols-outlined text-[#003ec7] text-2xl font-normal" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}>
               electric_bolt
             </span>
-            <h1 className="font-headline-sm text-2xl font-bold text-[#003ec7]">VoltLink Pro</h1>
+            <h1 className="font-headline-sm text-2xl font-bold text-[#003ec7]">ระบบเสนอราคาติดตั้งจุดชาร์จ EV</h1>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <nav className="flex items-center gap-4">
@@ -187,35 +210,63 @@ export default function Home() {
             </div>
 
             {/* Section 2: ข้อมูลลูกค้า */}
-            <div className="md:col-span-6 bg-white p-6 border border-[#c3c5d9] rounded-xl shadow-sm">
-              <div className="flex items-center gap-2 mb-6">
-                <span className="material-symbols-outlined text-[#003ec7]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}>
-                  person
-                </span>
-                <h3 className="font-headline-sm text-2xl font-bold text-[#191c1d]">ข้อมูลลูกค้า</h3>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-label-md text-sm text-[#585f67] mb-1">ชื่อลูกค้า</label>
-                  <input
-                    type="text"
-                    value={clientName}
-                    onChange={(e) => setClientName(e.target.value)}
-                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
-                    placeholder="ระบุชื่อลูกค้า / นิติบุคคล"
-                    required
-                  />
+            <div className="md:col-span-6 bg-white p-6 border border-[#c3c5d9] rounded-xl shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="material-symbols-outlined text-[#003ec7]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}>
+                    person
+                  </span>
+                  <h3 className="font-headline-sm text-2xl font-bold text-[#191c1d]">ข้อมูลลูกค้า</h3>
                 </div>
-                <div>
-                  <label className="block font-label-md text-sm text-[#585f67] mb-1">สถานที่ติดตั้ง</label>
-                  <textarea
-                    value={clientAddress}
-                    onChange={(e) => setClientAddress(e.target.value)}
-                    className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
-                    placeholder="บ้านเลขที่, แขวง/ตำบล, เขต/อำเภอ..."
-                    required
-                    rows={2}
-                  />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-label-md text-sm text-[#585f67] mb-1">ชื่อลูกค้า</label>
+                    <input
+                      type="text"
+                      value={clientName}
+                      onChange={(e) => setClientName(e.target.value)}
+                      className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                      placeholder="ระบุชื่อลูกค้า / นิติบุคคล"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-label-md text-sm text-[#585f67] mb-1">สถานที่ติดตั้ง</label>
+                    <textarea
+                      value={clientAddress}
+                      onChange={(e) => setClientAddress(e.target.value)}
+                      className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
+                      placeholder="บ้านเลขที่, แขวง/ตำบล, เขต/อำเภอ..."
+                      required
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              {/* รูปภาพและโลเคชันหน้างานจริงของลูกค้า */}
+              <div className="pt-6 mt-6 border-t border-[#c3c5d9]/60">
+                <span className="block font-label-md text-sm text-[#191c1d] mb-2 font-semibold flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[#003ec7] text-lg">house</span>
+                  รูปภาพและโลเคชันหน้างานจริง
+                </span>
+                <div className="flex flex-col gap-3">
+                  <a
+                    href="https://maps.app.goo.gl/XpSUWmP9L9vHsnUX9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[#003ec7] hover:underline font-body-md text-sm font-semibold"
+                  >
+                    <span className="material-symbols-outlined text-[#003ec7] text-lg">location_on</span>
+                    ดูโลเคชันแผนที่หน้างาน (Google Maps)
+                  </a>
+                  <div className="relative w-full h-44 rounded-lg overflow-hidden border border-[#c3c5d9]">
+                    <img
+                      src="/images/site-photo.jpg"
+                      alt="รูปภาพหน้างานจริง"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -272,27 +323,25 @@ export default function Home() {
                   </select>
                 </div>
                 
-                {/* Row 2: Warranty */}
-                <div>
+                {/* Row 2: Warranty & Scope */}
+                <div className="md:col-span-3">
                   <label className="block font-label-md text-sm text-[#585f67] mb-1">การรับประกันงานติดตั้ง</label>
                   <input
                     type="text"
                     value={warrantyYears}
                     onChange={(e) => setWarrantyYears(e.target.value)}
                     className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
-                    placeholder="เช่น 1 ปี, 2 ปี หรือ ไม่มีการรับประกัน"
+                    placeholder="เช่น 1 ปี"
                     required
                   />
                 </div>
-
-                {/* Row 3: Scope of Work details */}
-                <div className="md:col-span-2">
-                  <label className="block font-label-md text-sm text-[#585f67] mb-1">รายการขั้นตอนการทำงานและขอบเขตงานโดยละเอียด</label>
+                <div className="md:col-span-3">
+                  <label className="block font-label-md text-sm text-[#585f67] mb-1">ขั้นตอนการทำงาน</label>
                   <textarea
                     value={workScope}
                     onChange={(e) => setWorkScope(e.target.value)}
                     className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10"
-                    placeholder="ระบุขั้นตอนอย่างละเอียด เช่น:&#13;&#10;1. เดินสายไฟเมนจากตู้ออกมาตู้ชาร์จ&#13;&#10;2. ติดตั้งตู้คอนซูเมอร์ย่อยพร้อมอุปกรณ์ป้องกันไฟรั่ว&#13;&#10;3. ปักกราวด์ร็อดทองแดง 2.4 ม. และต่อสายดิน..."
+                    placeholder="ระบุขั้นตอนการติดตั้ง..."
                     required
                     rows={2}
                   />
@@ -303,7 +352,7 @@ export default function Home() {
                   <label className="block font-label-md text-sm text-[#191c1d] mb-3 font-semibold">
                     รายละเอียดอุปกรณ์และสเปกวัสดุที่จะใช้ (ระบุสูงสุด 10 รายการ)
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mb-6">
                     {equipments.map((eq, idx) => (
                       <div key={idx} className="flex items-center gap-2">
                         <span className="font-label-sm text-xs text-[#585f67] w-6 shrink-0 text-right">{idx + 1}.</span>
@@ -323,6 +372,55 @@ export default function Home() {
                         />
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Upload Past Works (Portfolio) Section */}
+                <div className="md:col-span-3 border-t border-[#c3c5d9] pt-6 mt-4">
+                  <label className="block font-label-md text-sm text-[#191c1d] mb-2 font-semibold flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[#003ec7]">photo_library</span>
+                    อัปโหลดรูปภาพผลงานที่เคยทำ (Past Works)
+                  </label>
+                  <p className="font-body-md text-xs text-[#585f67] mb-3">
+                    อัปโหลดรูปภาพผลงานติดตั้งที่ผ่านมาของช่างเพื่อแสดงประวัติผลงาน (เลือกอัปโหลดได้หลายรูป)
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handlePastWorksChange}
+                      className="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2.5 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-xs file:font-semibold
+                        file:bg-[#003ec7]/10 file:text-[#003ec7]
+                        hover:file:bg-[#003ec7]/20
+                        cursor-pointer"
+                    />
+                    
+                    {/* Previews */}
+                    {pastWorks.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 mt-2">
+                        {pastWorks.map((base64, index) => (
+                          <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-[#c3c5d9]">
+                            <img
+                              src={base64}
+                              alt={`ผลงานที่ ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removePastWork(index)}
+                              className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                              style={{ width: "24px", height: "24px" }}
+                            >
+                              <span className="material-symbols-outlined text-xs">close</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -417,6 +515,7 @@ export default function Home() {
               setWorkScope("");
               setMaterialCost("");
               setLaborCost("");
+              setPastWorks([]);
               setErrorMessage("");
             }}
             className="order-2 md:order-1 flex items-center justify-center text-[#585f67] hover:text-[#191c1d] px-6 py-2 hover:bg-[#d9e0ea] transition-all active:scale-95 rounded-full font-label-md text-sm font-semibold cursor-pointer"
