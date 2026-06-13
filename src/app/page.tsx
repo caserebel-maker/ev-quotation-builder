@@ -230,7 +230,7 @@ export default function Home() {
               <div className="font-body-md text-sm text-[#191c1d] leading-relaxed space-y-1.5 mt-2">
                 <div className="flex items-start gap-1.5">
                   <span className="text-[#003ec7] font-bold">•</span>
-                  <span><strong>อุปกรณ์เครื่องชาร์จ:</strong> ติดตั้งเครื่องชาร์จยี่ห้อ <strong>GWM Wallbox</strong> (ผู้ว่าจ้างจัดเตรียมตัวเครื่องและอุปกรณ์แท้จากศูนย์ไว้ให้ที่หน้างาน)</span>
+                  <span><strong>อุปกรณ์ที่มีอยู่แล้ว:</strong> ผู้ว่าจ้างได้จัดเตรียม <strong>1) เครื่องชาร์จ GWM Wallbox, 2) ตู้ครอบเบรกเกอร์ และ 3) RCBO GEYA 40A Type A</strong> ไว้ให้แล้ว (ช่างคิดเฉพาะค่าอุปกรณ์/วัสดุส่วนเพิ่มอื่นๆ เช่น สายไฟและท่อร้อยสาย)</span>
                 </div>
                 <div className="flex items-start gap-1.5">
                   <span className="text-[#003ec7] font-bold">•</span>
@@ -439,6 +439,64 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              {/* อุปกรณ์ที่ผู้ว่าจ้างมีอยู่แล้ว */}
+              <div className="pt-6 mt-6 border-t border-[#c3c5d9]/60">
+                <span className="block font-label-md text-sm text-[#191c1d] mb-2 font-semibold flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[#003ec7] text-lg">inventory_2</span>
+                  อุปกรณ์ที่ผู้ว่าจ้างมีอยู่แล้ว (ช่างคิดเฉพาะส่วนเพิ่ม)
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  <div 
+                    className="relative h-24 rounded-lg overflow-hidden border border-[#c3c5d9] bg-[#f8f9fa] flex items-center justify-center p-1 cursor-zoom-in group"
+                    onClick={() => {
+                      setModalImgSrc("/images/eq-1.jpg");
+                      setModalTitle("เครื่องชาร์จ GWM Wallbox ในกล่องบรรจุ");
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <img
+                      src="/images/eq-1.jpg"
+                      alt="เครื่องชาร์จ GWM"
+                      className="max-h-full max-w-full object-cover group-hover:scale-105 transition-transform duration-300 rounded"
+                    />
+                    <span className="absolute bottom-1 left-1 bg-black/60 text-[8px] text-white px-1 py-0.5 rounded font-bold">1. เครื่องชาร์จ GWM</span>
+                  </div>
+
+                  <div 
+                    className="relative h-24 rounded-lg overflow-hidden border border-[#c3c5d9] bg-[#f8f9fa] flex items-center justify-center p-1 cursor-zoom-in group"
+                    onClick={() => {
+                      setModalImgSrc("/images/eq-2.jpg");
+                      setModalTitle("ตู้ครอบเบรกเกอร์/ตู้คอนซูมเมอร์");
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <img
+                      src="/images/eq-2.jpg"
+                      alt="ตู้ครอบเบรกเกอร์"
+                      className="max-h-full max-w-full object-cover group-hover:scale-105 transition-transform duration-300 rounded"
+                    />
+                    <span className="absolute bottom-1 left-1 bg-black/60 text-[8px] text-white px-1 py-0.5 rounded font-bold">2. ตู้ครอบเบรกเกอร์</span>
+                  </div>
+
+                  <div 
+                    className="relative h-24 rounded-lg overflow-hidden border border-[#c3c5d9] bg-[#f8f9fa] flex items-center justify-center p-1 cursor-zoom-in group"
+                    onClick={() => {
+                      setModalImgSrc("/images/eq-3.jpg");
+                      setModalTitle("เบรกเกอร์กันดูด RCBO GEYA 40A Type A");
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <img
+                      src="/images/eq-3.jpg"
+                      alt="RCBO GEYA 40A"
+                      className="max-h-full max-w-full object-cover group-hover:scale-105 transition-transform duration-300 rounded"
+                    />
+                    <span className="absolute bottom-1 left-1 bg-black/60 text-[8px] text-white px-1 py-0.5 rounded font-bold">3. GEYA RCBO 40A</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             {/* Section 3: รายละเอียดการติดตั้ง */}
@@ -623,8 +681,13 @@ export default function Home() {
                 สรุปค่าใช้จ่าย
               </h3>
               <div className="space-y-4 relative z-10">
-                <div className="flex justify-between items-center pb-3 border-b border-white/20">
-                  <span className="font-body-md text-base">ค่าอุปกรณ์และอะไหล่</span>
+                <div className="flex justify-between items-start pb-3 border-b border-white/20">
+                  <div className="flex flex-col">
+                    <span className="font-body-md text-base">ค่าอุปกรณ์และอะไหล่ (เฉพาะส่วนเพิ่ม)</span>
+                    <span className="text-[10px] text-white/75 mt-0.5 max-w-[200px] md:max-w-xs leading-normal">
+                      *(คิดเฉพาะค่าสายไฟ ท่อร้อยสาย และวัสดุอื่นๆ เนื่องจากมีเครื่องชาร์จ RCBO และกล่องครอบแล้ว)*
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <input
                       type="number"

@@ -174,6 +174,28 @@ export async function POST(request: Request) {
       cid: "chargerModel",
     });
 
+    // Attach existing equipment images
+    const eq1Path = path.join(process.cwd(), "public", "images", "eq-1.jpg");
+    attachments.push({
+      filename: "eq-1.jpg",
+      path: eq1Path,
+      cid: "eq1",
+    });
+
+    const eq2Path = path.join(process.cwd(), "public", "images", "eq-2.jpg");
+    attachments.push({
+      filename: "eq-2.jpg",
+      path: eq2Path,
+      cid: "eq2",
+    });
+
+    const eq3Path = path.join(process.cwd(), "public", "images", "eq-3.jpg");
+    attachments.push({
+      filename: "eq-3.jpg",
+      path: eq3Path,
+      cid: "eq3",
+    });
+
     // Process past works
     let pastWorksHtml = "";
     if (pastWorks && Array.isArray(pastWorks) && pastWorks.length > 0) {
@@ -421,6 +443,33 @@ export async function POST(request: Request) {
               </div>
             </div>
 
+            <!-- Existing Equipment Section -->
+            <h3 style="color: #003ec7; font-size: 15px; margin-bottom: 10px; font-weight: bold;">อุปกรณ์ที่ผู้ว่าจ้างมีอยู่แล้ว (ช่างคิดเฉพาะค่าอุปกรณ์/วัสดุส่วนเพิ่ม)</h3>
+            <div style="background-color: #f3f4f5; border: 1px solid #c3c5d9; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="width: 33.33%; padding-right: 6px; vertical-align: top;">
+                    <div style="border-radius: 6px; overflow: hidden; border: 1px solid #c3c5d9; background-color: #ffffff; padding: 6px; text-align: center;">
+                      <img src="cid:eq1" alt="เครื่องชาร์จ GWM" style="width: 100%; display: block;" />
+                      <div style="font-size: 10px; font-weight: bold; color: #585f67; margin-top: 4px;">1. เครื่องชาร์จ GWM</div>
+                    </div>
+                  </td>
+                  <td style="width: 33.33%; padding-left: 3px; padding-right: 3px; vertical-align: top;">
+                    <div style="border-radius: 6px; overflow: hidden; border: 1px solid #c3c5d9; background-color: #ffffff; padding: 6px; text-align: center;">
+                      <img src="cid:eq2" alt="ตู้ครอบเบรกเกอร์" style="width: 100%; display: block;" />
+                      <div style="font-size: 10px; font-weight: bold; color: #585f67; margin-top: 4px;">2. ตู้ครอบเบรกเกอร์</div>
+                    </div>
+                  </td>
+                  <td style="width: 33.33%; padding-left: 6px; vertical-align: top;">
+                    <div style="border-radius: 6px; overflow: hidden; border: 1px solid #c3c5d9; background-color: #ffffff; padding: 6px; text-align: center;">
+                      <img src="cid:eq3" alt="RCBO GEYA 40A" style="width: 100%; display: block;" />
+                      <div style="font-size: 10px; font-weight: bold; color: #585f67; margin-top: 4px;">3. RCBO GEYA 40A</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
             <!-- Materials & Scope specifications table -->
             <h3 style="color: #003ec7; font-size: 15px; margin-bottom: 10px; font-weight: bold;">รายละเอียดวัสดุและอุปกรณ์ทางเทคนิค</h3>
             <table class="items-table">
@@ -436,7 +485,10 @@ export async function POST(request: Request) {
                 <tr>
                   <td style="text-align: center;">1</td>
                   <td>
-                    <strong>ค่าอุปกรณ์และอะไหล่มาตรฐานงานติดตั้งวงจรที่ 2</strong><br>
+                    <strong>ค่าอุปกรณ์และอะไหล่ส่วนเพิ่ม สำหรับงานติดตั้งวงจรที่ 2</strong><br>
+                    <span style="font-size: 11px; color: #d32f2f; font-weight: bold;">
+                      *(คิดเฉพาะค่าอุปกรณ์/วัสดุส่วนเพิ่ม เช่น สายไฟและท่อร้อยสาย เนื่องจากผู้ว่าจ้างมีเครื่องชาร์จ กล่องเบรกเกอร์ และ RCBO แล้ว)*
+                    </span><br>
                     <span style="font-size: 12px; color: #585f67;">
                       - เครื่องชาร์จประเภท: ${chargerType}<br>
                       - ขนาดสายไฟหลัก: สายทองแดง THW 1x10 sq.mm. เดินร้อยท่อแบบหนา<br>
