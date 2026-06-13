@@ -15,9 +15,9 @@ export default function Home() {
     "หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ"
   );
   
-  const [wireLength, setWireLength] = useState("");
+  const [wireLength, setWireLength] = useState("15");
   const [breakerSize, setBreakerSize] = useState("40A");
-  const [chargerType, setChargerType] = useState("เครื่องชาร์จของลูกค้าเอง (7.4kW)");
+  const [chargerType, setChargerType] = useState("เครื่องชาร์จ GWM ของลูกค้าเอง (7.4kW)");
   
   // Separate equipment list into 10 fields
   const [equipments, setEquipments] = useState<string[]>(Array(10).fill(""));
@@ -201,18 +201,47 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Important Condition Card */}
-        <div className="bg-red-50 border-2 border-red-300 p-5 rounded-lg flex items-start gap-3 mb-6">
-          <span className="material-symbols-outlined text-red-600 text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
-            warning
-          </span>
-          <div>
-            <h4 className="font-headline-sm text-base font-bold text-red-700 mb-1">
-              เงื่อนไขการรับงานและชำระเงิน (โปรดอ่านและทำความเข้าใจก่อนประเมินราคา)
-            </h4>
-            <p className="font-body-md text-sm text-red-700 font-bold leading-relaxed">
-              ทางผู้ว่าจ้างไม่มีนโยบายการจ่ายค่ามัดจำล่วงหน้าใด ๆ ทั้งสิ้น หากช่างได้เข้าสำรวจหน้างานและประเมินราคารวมสุทธิเรียบร้อยแล้ว สามารถเริ่มดำเนินการติดตั้งได้ทันที โดยจะชำระเงินเต็มจำนวนหลังจากเสร็จสิ้นการติดตั้งและส่งมอบงานผ่านแล้วเท่านั้น หากช่างท่านใดไม่สะดวกในเงื่อนไขการทำงานและชำระเงินรูปแบบนี้ สามารถปฏิเสธไม่รับงานนี้ได้ทันทีโดยไม่มีข้อผูกมัดใด ๆ
-            </p>
+        {/* Important Conditions & Job Details Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Important Condition Card */}
+          <div className="bg-red-50 border-2 border-red-300 p-5 rounded-lg flex items-start gap-3 h-full">
+            <span className="material-symbols-outlined text-red-600 text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
+              warning
+            </span>
+            <div>
+              <h4 className="font-headline-sm text-base font-bold text-red-700 mb-1">
+                เงื่อนไขการรับงานและชำระเงิน (สำคัญที่สุด)
+              </h4>
+              <p className="font-body-md text-sm text-red-700 font-bold leading-relaxed">
+                ทางผู้ว่าจ้างไม่มีนโยบายการจ่ายค่ามัดจำล่วงหน้าใด ๆ ทั้งสิ้น หากช่างได้เข้าสำรวจหน้างานและประเมินราคารวมสุทธิเรียบร้อยแล้ว สามารถเริ่มดำเนินการติดตั้งได้ทันที โดยจะชำระเงินเต็มจำนวนหลังจากเสร็จสิ้นการติดตั้งและส่งมอบงานผ่านแล้วเท่านั้น หากช่างท่านใดไม่สะดวกในเงื่อนไขการทำงานและชำระเงินรูปแบบนี้ สามารถปฏิเสธไม่รับงานนี้ได้ทันทีโดยไม่มีข้อผูกมัดใด ๆ
+              </p>
+            </div>
+          </div>
+
+          {/* Job Details & Requirements Card */}
+          <div className="bg-blue-50 border-2 border-blue-200 p-5 rounded-lg flex items-start gap-3 h-full">
+            <span className="material-symbols-outlined text-[#003ec7] text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
+              info
+            </span>
+            <div>
+              <h4 className="font-headline-sm text-base font-bold text-[#003ec7] mb-1">
+                รายละเอียดงานติดตั้ง (ความต้องการจากผู้ว่าจ้าง)
+              </h4>
+              <div className="font-body-md text-sm text-[#191c1d] leading-relaxed space-y-1.5 mt-2">
+                <div className="flex items-start gap-1.5">
+                  <span className="text-[#003ec7] font-bold">•</span>
+                  <span><strong>อุปกรณ์เครื่องชาร์จ:</strong> ติดตั้งเครื่องชาร์จยี่ห้อ <strong>GWM Wallbox</strong> (ผู้ว่าจ้างจัดเตรียมตัวเครื่องและอุปกรณ์แท้จากศูนย์ไว้ให้ที่หน้างาน)</span>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-[#003ec7] font-bold">•</span>
+                  <span><strong>ระยะห่างเดินสายไฟ:</strong> ระยะห่างจากตำแหน่งมิเตอร์หลักถึงจุดติดตั้งเครื่องชาร์จ <strong>ราว 15-20 เมตร</strong> (กรุณาเดินสายและใช้อุปกรณ์มาตรฐานวงจรที่ 2)</span>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-[#003ec7] font-bold">•</span>
+                  <span><strong>ประเมินหน้างาน:</strong> ช่างสามารถประเมินพื้นที่และจุดเจาะ/เดินท่อได้จากรูปภาพถ่ายจริงของบ้านลูกค้าและพิกัด Google Maps ด้านล่างนี้</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -457,10 +486,10 @@ export default function Home() {
                     onChange={(e) => setChargerType(e.target.value)}
                     className="w-full bg-[#f3f4f5] border border-[#c3c5d9] p-3 rounded-lg font-body-md text-[#191c1d] focus:outline-none focus:border-[#003ec7] focus:ring-1 focus:ring-[#003ec7]/10 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22currentColor%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.5em_1.5em] bg-[right_1rem_center] bg-no-repeat"
                   >
-                    <option value="เครื่องชาร์จของลูกค้าเอง (7.4kW)">เครื่องชาร์จของลูกค้าเอง (7.4kW)</option>
-                    <option value="เครื่องชาร์จของลูกค้าเอง (11kW)">เครื่องชาร์จของลูกค้าเอง (11kW)</option>
-                    <option value="เครื่องชาร์จของลูกค้าเอง (22kW)">เครื่องชาร์จของลูกค้าเอง (22kW)</option>
-                    <option value="เครื่องชาร์จของลูกค้าเอง (Portable)">เครื่องชาร์จของลูกค้าเอง (Portable)</option>
+                    <option value="เครื่องชาร์จ GWM ของลูกค้าเอง (7.4kW)">เครื่องชาร์จ GWM ของลูกค้าเอง (7.4kW)</option>
+                    <option value="เครื่องชาร์จ GWM ของลูกค้าเอง (11kW)">เครื่องชาร์จ GWM ของลูกค้าเอง (11kW)</option>
+                    <option value="เครื่องชาร์จ GWM ของลูกค้าเอง (22kW)">เครื่องชาร์จ GWM ของลูกค้าเอง (22kW)</option>
+                    <option value="เครื่องชาร์จ GWM ของลูกค้าเอง (Portable)">เครื่องชาร์จ GWM ของลูกค้าเอง (Portable)</option>
                   </select>
                 </div>
                 
@@ -654,7 +683,8 @@ export default function Home() {
               setTechFacebook("");
               setClientName("");
               setClientAddress("หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ");
-              setWireLength("");
+              setWireLength("15");
+              setChargerType("เครื่องชาร์จ GWM ของลูกค้าเอง (7.4kW)");
               setEquipments(Array(10).fill(""));
               setWarrantyYears("1 ปี");
               setWorkScope("");
