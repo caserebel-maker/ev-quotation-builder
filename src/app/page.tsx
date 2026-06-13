@@ -34,6 +34,7 @@ export default function Home() {
   const [isSending, setIsSending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [testMailUrl, setTestMailUrl] = useState("");
 
   // Past works images state
   const [pastWorks, setPastWorks] = useState<string[]>([]);
@@ -111,6 +112,7 @@ export default function Home() {
 
     setIsSending(true);
     setErrorMessage("");
+    setTestMailUrl("");
 
     try {
       const response = await fetch("/api/send-quotation", {
@@ -146,11 +148,16 @@ export default function Home() {
       }
 
       setIsSuccess(true);
+      if (resData.previewUrl) {
+        setTestMailUrl(resData.previewUrl);
+      } else {
+        setTestMailUrl("");
+      }
       
-      // Reset success state after 3 seconds
+      // Reset success state after 15 seconds if it has previewUrl, else 3 seconds
       setTimeout(() => {
         setIsSuccess(false);
-      }, 3000);
+      }, resData.previewUrl ? 15000 : 3000);
 
     } catch (err: any) {
       console.error(err);
@@ -206,6 +213,36 @@ export default function Home() {
             </p>
           </div>
         </div>
+
+        {/* Success notification banner */}
+        {isSuccess && (
+          <div className="mb-6 p-5 rounded-lg bg-green-50 border-2 border-green-300 text-green-800 flex flex-col gap-3 animate-fade-in">
+            <div className="flex items-center gap-2 font-bold text-base">
+              <span className="material-symbols-outlined text-green-600 text-2xl">check_circle</span>
+              <span>บันทึกและส่งใบเสนอราคาสำเร็จเรียบร้อยแล้ว!</span>
+            </div>
+            {testMailUrl ? (
+              <div className="bg-white p-4 rounded-lg border border-green-200 mt-1 flex flex-col gap-2.5">
+                <p className="font-body-md text-sm text-[#585f67] leading-relaxed">
+                  📢 <strong>หมายเหตุ (โหมดทดสอบ):</strong> ระบบไม่พบการตั้งค่าบัญชีอีเมลจริง จึงส่งข้อมูลผ่านผู้ให้บริการจำลอง Ethereal Email เพื่อให้คุณทดสอบพรีวิวดูหน้าตาใบเสนอราคาที่ส่งไปจริงได้ทันที
+                </p>
+                <a
+                  href={testMailUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-[#003ec7] hover:bg-[#003ec7]/90 text-white font-semibold py-2.5 px-6 rounded-lg text-sm transition-all w-fit shadow-sm cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  คลิกที่นี่เพื่อเปิดดูตัวอย่างอีเมลใบเสนอราคา
+                </a>
+              </div>
+            ) : (
+              <p className="font-body-md text-sm text-green-700">
+                ระบบได้นำส่งสำเนาใบเสนอราคาไปยังอีเมลปลายทาง <strong>tumyen@gmail.com</strong> เรียบร้อยแล้วครับ
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Error notification banner */}
         {errorMessage && (
@@ -595,12 +632,14 @@ export default function Home() {
               setClientAddress("หมู่บ้าน กฤตยา ซอย 2/1 บางนาตราด บางพลีใหญ่ บางพลี สมุทรปราการ");
               setWireLength("");
               setEquipments(Array(10).fill(""));
+              setWarrantyYears("1 - 2 ปี"); // Wait, original setWarrantyYears reset is "1 ปี", let's keep it as is
               setWarrantyYears("1 ปี");
               setWorkScope("");
               setEarliestStartDate("");
               setMaterialCost("");
               setLaborCost("");
               setPastWorks([]);
+              setTestMailUrl("");
               setErrorMessage("");
             }}
             className="order-2 md:order-1 flex items-center justify-center text-[#585f67] hover:text-[#191c1d] px-6 py-2 hover:bg-[#d9e0ea] transition-all active:scale-95 rounded-full font-label-md text-sm font-semibold cursor-pointer"

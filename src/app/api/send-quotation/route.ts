@@ -116,17 +116,29 @@ export async function POST(request: Request) {
     }
 
     // SMTP credentials
-    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-    const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    let smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+    let smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
+    let smtpUser = process.env.SMTP_USER;
+    let smtpPass = process.env.SMTP_PASS;
+    let previewUrl = "";
+    let isTestMode = false;
 
     if (!smtpUser || !smtpPass) {
-      console.error("Missing SMTP credentials (SMTP_USER/SMTP_PASS) in environment variables");
-      return NextResponse.json(
-        { error: "ระบบยังไม่ได้กำหนดค่าบัญชีส่งอีเมล (SMTP_USER และ SMTP_PASS) กรุณาตั้งค่าหลังบ้าน" },
-        { status: 500 }
-      );
+      console.log("SMTP credentials missing. Creating Ethereal test account...");
+      try {
+        const testAccount = await nodemailer.createTestAccount();
+        smtpHost = "smtp.ethereal.email";
+        smtpPort = 587;
+        smtpUser = testAccount.user;
+        smtpPass = testAccount.pass;
+        isTestMode = true;
+      } catch (err) {
+        console.error("Failed to create Ethereal test account:", err);
+        return NextResponse.json(
+          { error: "ระบบยังไม่ได้กำหนดค่าบัญชีส่งอีเมล (SMTP) และไม่สามารถสร้าง Ethereal account เพื่อทดสอบได้" },
+          { status: 500 }
+        );
+      }
     }
 
     // Auto-generate details for the formal PDF/Email layout
@@ -471,14 +483,26 @@ export async function POST(request: Request) {
 
     // Send using Nodemailer
     const info = await transporter.sendMail({
-      from: `"ระบบเสนอราคาติดตั้งจุดชาร์จ EV" <${smtpUser}>`,
+      from: isTestMode 
+        ? `"ระบบเสนอราคาติดตั้งจุดชาร์จ EV (Test Mode)" <${smtpUser}>`
+        : `"ระบบเสนอราคาติดตั้งจุดชาร์จ EV" <${smtpUser}>`,
       to: "tumyen@gmail.com",
-      subject: subject,
+      subject: isTestMode ? `[TEST] ${subject}` : subject,
       html: emailHtml,
       attachments: attachments,
     });
 
-    return NextResponse.json({ success: true, messageId: info.messageId });
+    if (isTestMode) {
+      previewUrl = nodemailer.getTestMessageUrl(info) || "";
+      console.log("Test email sent. Preview URL:", previewUrl);
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      messageId: info.messageId, 
+      previewUrl, 
+      isTestMode 
+    });
   } catch (err: any) {
     console.error("send-quotation SMTP error:", err);
     return NextResponse.json(
