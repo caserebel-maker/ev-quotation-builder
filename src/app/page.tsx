@@ -541,14 +541,19 @@ export default function Home() {
             
           </div>
 
-          {/* Additional Instruction Card */}
-          <div className="bg-[#e7e8e9] border border-[#737688] p-4 rounded-lg flex items-start gap-3">
-            <span className="material-symbols-outlined text-[#585f67]" style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}>
-              info
+          {/* Important Condition Card */}
+          <div className="bg-red-50 border-2 border-red-300 p-5 rounded-lg flex items-start gap-3">
+            <span className="material-symbols-outlined text-red-600 text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1, 'wght' 400" }}>
+              warning
             </span>
-            <p className="font-label-md text-sm text-[#585f67] leading-relaxed">
-              ใบเสนอราคานี้จะถูกส่งสำเนาไปยังระบบกลาง <strong>tumyen@gmail.com</strong> เพื่อการตรวจสอบมาตรฐานความปลอดภัยโดยวิศวกรไฟฟ้า
-            </p>
+            <div>
+              <h4 className="font-headline-sm text-base font-bold text-red-700 mb-1">
+                เงื่อนไขการรับงานและชำระเงิน (โปรดอ่านและทำความเข้าใจก่อนประเมินราคา)
+              </h4>
+              <p className="font-body-md text-sm text-red-700 font-bold leading-relaxed">
+                ทางผู้ว่าจ้างไม่มีนโยบายการจ่ายค่ามัดจำล่วงหน้าใด ๆ ทั้งสิ้น หากช่างได้เข้าสำรวจหน้างานและประเมินราคารวมสุทธิเรียบร้อยแล้ว สามารถเริ่มดำเนินการติดตั้งได้ทันที โดยจะชำระเงินเต็มจำนวนหลังจากเสร็จสิ้นการติดตั้งและส่งมอบงานผ่านแล้วเท่านั้น หากช่างท่านใดไม่สะดวกในเงื่อนไขการทำงานและชำระเงินรูปแบบนี้ สามารถปฏิเสธไม่รับงานนี้ได้ทันทีโดยไม่มีข้อผูกมัดใด ๆ
+              </p>
+            </div>
           </div>
         </form>
       </main>
